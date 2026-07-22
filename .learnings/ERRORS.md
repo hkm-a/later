@@ -253,3 +253,36 @@ fatal: cannot use C:/Users/hkm/.gitignore_global as an exclude file
 - **Notes**: 已设置为 `C:/Users/hkm/.dotfiles/git/gitignore_global`；`git status --short` 已恢复正常。
 
 ---
+
+## [ERR-20260722-009] vite_config_node_types
+
+**Logged**: 2026-07-22T00:00:00Z
+**Priority**: medium
+**Status**: resolved
+**Area**: config
+
+### Summary
+GitHub Pages 工作流在生产构建时无法识别 Vite 配置中的 Node 全局变量 `process`。
+
+### Error
+```
+Cannot find name 'process'. Do you need to install type definitions for node?
+```
+
+### Context
+- Failed workflow: GitHub Actions run 29888112593
+- Related file: `vite.config.ts`
+
+### Suggested Fix
+使用 Vite 的 `loadEnv()` 读取部署环境变量，避免将 Node 类型声明加入前端项目。
+
+### Metadata
+- Reproducible: yes
+- Related Files: vite.config.ts
+- Pattern-Key: build.vite-config-node-types
+
+### Resolution
+- **Resolved**: 2026-07-22T00:00:00Z
+- **Notes**: 已用 `loadEnv(mode, '.', '')` 替换 `process.env`；本地将模拟 GitHub Actions 环境验证资源前缀。
+
+---
