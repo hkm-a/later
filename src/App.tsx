@@ -7,12 +7,12 @@ import { getLinks, replaceLinks, saveLink } from './lib/storage'
 import type { LinkItem, LinkStatus, View } from './types'
 
 const navigation: Array<{ id: View; label: string }> = [
-  { id: 'inbox', label: 'Inbox' },
-  { id: 'today', label: 'Today' },
-  { id: 'archive', label: 'Archive' },
+  { id: 'inbox', label: '收件箱' },
+  { id: 'today', label: '今日' },
+  { id: 'archive', label: '归档' },
 ]
 
-/** The app shell owns persisted records and the tiny amount of navigation state. */
+/** 应用外壳统一管理持久化记录和少量导航状态。 */
 export default function App() {
   const [links, setLinks] = useState<LinkItem[]>([])
   const [view, setView] = useState<View>('inbox')
@@ -38,7 +38,7 @@ export default function App() {
 
         setLinks(initialLinks)
       } catch {
-        setStorageError('Later could not read this browser’s local storage.')
+        setStorageError('无法读取此浏览器中的本地数据。')
       } finally {
         setIsLoading(false)
       }
@@ -98,12 +98,12 @@ export default function App() {
       await saveLink(updatedLink)
       setLinks((currentLinks) => currentLinks.map((item) => item.id === link.id ? updatedLink : item))
     } catch {
-      setStorageError('Later could not save that change. Your list was left untouched.')
+      setStorageError('无法保存此更改，列表内容未被修改。')
     }
   }
 
   async function resetDemoData(): Promise<void> {
-    if (!window.confirm('Replace every saved link with the five demo links?')) return
+    if (!window.confirm('要用 5 条演示链接替换所有已保存的链接吗？')) return
 
     try {
       const demoLinks = createDemoLinks()
@@ -113,22 +113,22 @@ export default function App() {
       setSearch('')
       setArchiveFilter('all')
     } catch {
-      setStorageError('Later could not reset the demo data.')
+      setStorageError('无法重置演示数据。')
     }
   }
 
-  const title = view === 'inbox' ? 'Inbox' : view === 'today' ? 'Today' : 'Archive'
+  const title = view === 'inbox' ? '收件箱' : view === 'today' ? '今日' : '归档'
   const emptyMessage = view === 'inbox'
-    ? 'No links waiting. Add one above when something deserves your attention.'
+    ? '暂无待处理链接。遇到值得稍后查看的内容时，可在上方添加。'
     : view === 'today'
-      ? 'Nothing is waiting for today.'
-      : 'Nothing has been archived yet.'
+      ? '今天没有待处理链接。'
+      : '尚未归档任何链接。'
 
   return (
     <main className="app-shell">
       <aside className="sidebar">
         <a className="brand" href="#top">Later</a>
-        <nav aria-label="Primary navigation" className="navigation">
+        <nav aria-label="主导航" className="navigation">
           {navigation.map((item) => (
             <button
               aria-current={view === item.id ? 'page' : undefined}
@@ -142,20 +142,20 @@ export default function App() {
             </button>
           ))}
         </nav>
-        <p className="sidebar-note">Private to this browser.</p>
+        <p className="sidebar-note">数据仅保存在此浏览器中。</p>
       </aside>
 
       <section className="content" id="top">
         <header className="topbar">
           <div>
-            <p className="eyebrow">Link inbox</p>
+            <p className="eyebrow">链接收件箱</p>
             <h1>{title}</h1>
           </div>
           <label className="search-box">
-            <span className="sr-only">Search this view</span>
+            <span className="sr-only">搜索当前视图</span>
             <input
               onChange={(event) => setSearch(event.target.value)}
-              placeholder="Search  /"
+              placeholder="搜索  /"
               ref={searchInput}
               type="search"
               value={search}
@@ -165,25 +165,25 @@ export default function App() {
 
         <AddLinkForm onAdd={addLink} />
 
-        {view === 'today' && <p className="view-note">{inboxCount} links waiting · oldest first · ten at a time</p>}
+        {view === 'today' && <p className="view-note">待处理 {inboxCount} 条 · 最早添加的优先 · 每次最多 10 条</p>}
         {view === 'archive' && (
           <label className="archive-filter">
-            <span>Show</span>
+            <span>显示</span>
             <select onChange={(event) => setArchiveFilter(event.target.value as typeof archiveFilter)} value={archiveFilter}>
-              <option value="all">Everything</option>
-              <option value="done">Done</option>
-              <option value="discarded">Discarded</option>
+              <option value="all">全部</option>
+              <option value="done">已完成</option>
+              <option value="discarded">已丢弃</option>
             </select>
           </label>
         )}
 
         {storageError && <p className="storage-error" role="alert">{storageError}</p>}
-        {isLoading ? <p className="empty-state">Opening your local inbox…</p> : (
+        {isLoading ? <p className="empty-state">正在打开本地收件箱…</p> : (
           <LinkList emptyMessage={emptyMessage} items={visibleLinks} onStatusChange={changeStatus} view={view} />
         )}
 
         <footer>
-          <button className="reset-button" onClick={() => void resetDemoData()} type="button">Reset demo data</button>
+          <button className="reset-button" onClick={() => void resetDemoData()} type="button">重置演示数据</button>
         </footer>
       </section>
     </main>

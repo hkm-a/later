@@ -8,7 +8,7 @@ type LinkListProps = {
   view: 'inbox' | 'today' | 'archive'
 }
 
-/** Renders saved items; status changes remain in App because they affect the shared collection. */
+/** 渲染已保存条目；状态变更留在 App 中统一处理，因为它会影响共享集合。 */
 export function LinkList({ emptyMessage, items, onStatusChange, view }: LinkListProps) {
   if (!items.length) {
     return <p className="empty-state">{emptyMessage}</p>
@@ -20,18 +20,18 @@ export function LinkList({ emptyMessage, items, onStatusChange, view }: LinkList
         <li className="link-item" key={item.id}>
           <div className="link-copy">
             <a href={item.url} rel="noreferrer" target="_blank">{getDisplayTitle(item)}</a>
-            <p>{getHostname(item.url)} · added {formatDate(item.createdAt)}</p>
+            <p>{getHostname(item.url)} · 添加于 {formatDate(item.createdAt)}</p>
             {item.tags.length > 0 && (
-              <div aria-label="Tags" className="tag-list">
+              <div aria-label="标签" className="tag-list">
                 {item.tags.map((tag) => <span className="tag" key={tag}>{tag}</span>)}
               </div>
             )}
           </div>
           <div className="item-actions">
-            {view !== 'archive' && <a className="text-button" href={item.url} rel="noreferrer" target="_blank">Open</a>}
-            {item.status === 'inbox' && <button className="text-button" onClick={() => void onStatusChange(item, 'done')} type="button">Done</button>}
-            {item.status === 'inbox' && <button className="text-button muted-action" onClick={() => void onStatusChange(item, 'discarded')} type="button">Discard</button>}
-            {view === 'archive' && <button className="text-button" onClick={() => void onStatusChange(item, 'inbox')} type="button">Restore</button>}
+            {view !== 'archive' && <a className="text-button" href={item.url} rel="noreferrer" target="_blank">打开</a>}
+            {item.status === 'inbox' && <button className="text-button" onClick={() => void onStatusChange(item, 'done')} type="button">完成</button>}
+            {item.status === 'inbox' && <button className="text-button muted-action" onClick={() => void onStatusChange(item, 'discarded')} type="button">丢弃</button>}
+            {view === 'archive' && <button className="text-button" onClick={() => void onStatusChange(item, 'inbox')} type="button">恢复</button>}
           </div>
         </li>
       ))}
@@ -48,5 +48,5 @@ function getHostname(url: string): string {
 }
 
 function formatDate(isoDate: string): string {
-  return new Intl.DateTimeFormat(undefined, { month: 'short', day: 'numeric' }).format(new Date(isoDate))
+  return new Intl.DateTimeFormat('zh-CN', { month: 'long', day: 'numeric' }).format(new Date(isoDate))
 }

@@ -7,8 +7,8 @@ type AddLinkFormProps = {
 }
 
 /**
- * This component owns temporary form text only. The parent owns saved links,
- * which keeps an invalid draft from ever reaching IndexedDB.
+ * 此组件只管理表单草稿，已保存链接由父组件管理，
+ * 从而确保无效草稿不会写入 IndexedDB。
  */
 export function AddLinkForm({ onAdd }: AddLinkFormProps) {
   const [url, setUrl] = useState('')
@@ -44,7 +44,7 @@ export function AddLinkForm({ onAdd }: AddLinkFormProps) {
       setTitle('')
       setTags('')
     } catch {
-      setError('Could not save this link. Please try again.')
+      setError('无法保存此链接，请重试。')
     } finally {
       setIsSaving(false)
     }
@@ -53,32 +53,32 @@ export function AddLinkForm({ onAdd }: AddLinkFormProps) {
   return (
     <form className="add-link-form" onSubmit={handleSubmit}>
       <div className="form-primary-row">
-        <label className="sr-only" htmlFor="link-url">Link URL</label>
+        <label className="sr-only" htmlFor="link-url">链接网址</label>
         <input
           autoComplete="url"
           id="link-url"
           inputMode="url"
           onChange={(event) => setUrl(event.target.value)}
-          placeholder="Paste a link to deal with later"
+          placeholder="粘贴要稍后处理的链接"
           value={url}
         />
         <button disabled={isSaving} type="submit">
-          {isSaving ? 'Saving…' : 'Add link'}
+          {isSaving ? '保存中…' : '添加链接'}
         </button>
       </div>
       <div className="form-details-row">
-        <label className="sr-only" htmlFor="link-title">Optional title</label>
+        <label className="sr-only" htmlFor="link-title">可选标题</label>
         <input
           id="link-title"
           onChange={(event) => setTitle(event.target.value)}
-          placeholder="Optional title"
+          placeholder="可选标题"
           value={title}
         />
-        <label className="sr-only" htmlFor="link-tags">Tags</label>
+        <label className="sr-only" htmlFor="link-tags">标签</label>
         <input
           id="link-tags"
           onChange={(event) => setTags(event.target.value)}
-          placeholder="Tags, separated by commas"
+          placeholder="标签，用逗号分隔"
           value={tags}
         />
       </div>

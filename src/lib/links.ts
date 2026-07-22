@@ -5,14 +5,14 @@ type UrlResult =
   | { valid: false; error: string }
 
 /**
- * Accepts a pasted web address and returns one canonical http(s) URL.
- * Keeping this rule here prevents the form and future extension from disagreeing.
+ * 接收粘贴的网址并返回规范化的 HTTP(S) URL。
+ * 规则集中在此处，避免表单和未来入口采用不同校验逻辑。
  */
 export function validateAndNormalizeUrl(rawUrl: string): UrlResult {
   const trimmed = rawUrl.trim()
 
   if (!trimmed) {
-    return { valid: false, error: 'Enter a link first.' }
+    return { valid: false, error: '请先输入链接。' }
   }
 
   const withProtocol = /^[a-zA-Z][a-zA-Z\d+-.]*:/.test(trimmed)
@@ -23,21 +23,21 @@ export function validateAndNormalizeUrl(rawUrl: string): UrlResult {
     const url = new URL(withProtocol)
 
     if (!['http:', 'https:'].includes(url.protocol) || !url.hostname) {
-      return { valid: false, error: 'Use a valid http or https link.' }
+      return { valid: false, error: '请输入有效的 HTTP 或 HTTPS 链接。' }
     }
 
     return { valid: true, value: url.toString() }
   } catch {
-    return { valid: false, error: 'Use a valid http or https link.' }
+    return { valid: false, error: '请输入有效的 HTTP 或 HTTPS 链接。' }
   }
 }
 
-/** Turns one comma-separated field into stable, display-ready tags. */
+/** 将逗号分隔的输入转换为稳定、可展示的标签。 */
 export function parseTags(rawTags: string): string[] {
   return [...new Set(rawTags.split(',').map((tag) => tag.trim().toLowerCase()).filter(Boolean))]
 }
 
-/** Uses the hostname as a useful title when the user intentionally leaves title blank. */
+/** 用户未填写标题时，以域名作为可用的默认标题。 */
 export function getDisplayTitle(item: Pick<LinkItem, 'title' | 'url'>): string {
   if (item.title.trim()) {
     return item.title
@@ -50,7 +50,7 @@ export function getDisplayTitle(item: Pick<LinkItem, 'title' | 'url'>): string {
   }
 }
 
-/** Matches the one search box against every field a user expects to find. */
+/** 用同一个搜索框匹配用户期望检索的全部字段。 */
 export function matchesSearch(item: LinkItem, query: string): boolean {
   const normalizedQuery = query.trim().toLowerCase()
 
@@ -64,7 +64,7 @@ export function matchesSearch(item: LinkItem, query: string): boolean {
     .includes(normalizedQuery)
 }
 
-/** A tiny development-time guard for the one non-trivial trust-boundary rule. */
+/** 开发期的轻量检查，保护唯一的非平凡输入边界规则。 */
 export function runLinkChecks(): void {
   const normalized = validateAndNormalizeUrl('example.com/notes')
   const rejected = validateAndNormalizeUrl('ftp://example.com')

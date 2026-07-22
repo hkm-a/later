@@ -3,7 +3,7 @@ import type { LinkItem } from '../types'
 const databaseName = 'later-db'
 const storeName = 'links'
 
-/** Opens the one-browser database and creates its single object store on first use. */
+/** 打开浏览器本地数据库，并在首次使用时创建唯一的数据表。 */
 function openDatabase(): Promise<IDBDatabase> {
   return new Promise((resolve, reject) => {
     const request = indexedDB.open(databaseName, 1)
@@ -21,7 +21,7 @@ function openDatabase(): Promise<IDBDatabase> {
   })
 }
 
-/** Converts IndexedDB's event request API into the async style used by the UI. */
+/** 将 IndexedDB 的事件式请求 API 转换为界面使用的异步风格。 */
 function requestResult<T>(request: IDBRequest<T>): Promise<T> {
   return new Promise((resolve, reject) => {
     request.onsuccess = () => resolve(request.result)
@@ -29,7 +29,7 @@ function requestResult<T>(request: IDBRequest<T>): Promise<T> {
   })
 }
 
-/** Waits for a write transaction so the UI only updates after the browser saved data. */
+/** 等待写入事务完成，确保浏览器保存数据后才更新界面。 */
 function transactionComplete(transaction: IDBTransaction): Promise<void> {
   return new Promise((resolve, reject) => {
     transaction.oncomplete = () => resolve()
@@ -56,7 +56,7 @@ export async function saveLink(link: LinkItem): Promise<void> {
   database.close()
 }
 
-/** Replaces the local dataset for the explicit demo reset action. */
+/** 为明确的演示数据重置操作替换本地数据集。 */
 export async function replaceLinks(links: LinkItem[]): Promise<void> {
   const database = await openDatabase()
   const transaction = database.transaction(storeName, 'readwrite')

@@ -1,6 +1,6 @@
 export type LinkStatus = 'inbox' | 'done' | 'discarded'
 
-/** A link saved by the user. This is the only persisted application record. */
+/** 用户保存的链接，也是应用唯一的持久化记录。 */
 export type LinkItem = {
   id: string
   url: string

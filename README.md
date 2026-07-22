@@ -1,24 +1,31 @@
 # Later
 
-Later is a tiny, local-first inbox for links that should be dealt with later.
-It intentionally stores data only in this browser using IndexedDB.
+一个本地优先的“稍后处理”链接收件箱。将暂时无暇查看的链接加入收件箱，在“今日”中按最早添加顺序处理，完成、丢弃或之后从归档恢复。
 
-## Run
+数据只保存于当前浏览器的 IndexedDB；无需账户、后端或同步服务。
 
-Requires Node.js 20.19+ (or 22.12+) and npm.
+## 本地运行
+
+需要 Node.js 20.19+（或 22.12+）及 npm。
 
 ```bash
 npm install
 npm run dev
 ```
 
-Use `npm run check` for TypeScript and production-build checks.
+使用以下命令执行 TypeScript 检查与生产构建：
 
-## Deliberately excluded
+```bash
+npm run check
+```
 
-- Accounts, sync, and a backend
-- Browser extension and bookmark import
-- AI tagging, recommendations, and web-page scraping
-- Teams, sharing, and mobile apps
+## 产品边界
 
-Those are separate products until a real user need proves otherwise.
+以下能力有意不纳入本项目：
+
+- 账户、同步和后端
+- 浏览器扩展与书签导入
+- AI 标签、推荐与网页内容抓取
+- 团队协作、分享与原生移动端应用
+
+在真实需求出现前，它们都应视为独立产品。

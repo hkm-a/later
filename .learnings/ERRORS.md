@@ -187,3 +187,69 @@ Use a managed long-running process with resumable download rather than a single 
 - **Notes**: Used portable Node.js v24.18.0 ZIP (extracted to /tmp) instead of MSI installer. No admin rights required; npm install and all builds succeeded.
 
 ---
+
+## [ERR-20260722-007] portable_npm_node_path
+
+**Logged**: 2026-07-22T00:00:00Z
+**Priority**: low
+**Status**: resolved
+**Area**: infra
+
+### Summary
+便携版 `npm.cmd` 未自动找到同目录的 Node 可执行文件，导致构建命令无法运行。
+
+### Error
+```
+'"node"' is not recognized as an internal or external command
+```
+
+### Context
+- Command attempted: `'/tmp/node-v24.18.0-win-x64/npm.cmd' run check`
+- Environment: Git Bash with portable Node.js v24.18.0
+
+### Suggested Fix
+直接使用便携版 `node.exe` 执行 TypeScript 和 Vite 的本地 CLI 入口。
+
+### Metadata
+- Reproducible: yes
+- Related Files: package.json
+- Pattern-Key: deps.portable-node-path
+
+### Resolution
+- **Resolved**: 2026-07-22T00:00:00Z
+- **Notes**: 使用 `node.exe node_modules/typescript/bin/tsc -b` 和 `node.exe node_modules/vite/bin/vite.js build`，无需修改项目源码。
+
+---
+
+## [ERR-20260722-008] global_excludesfile_symlink
+
+**Logged**: 2026-07-22T00:00:00Z
+**Priority**: low
+**Status**: resolved
+**Area**: infra
+
+### Summary
+Git 全局配置的 `core.excludesfile` 指向 Windows 符号链接，Git for Windows 无法读取该文件。
+
+### Error
+```
+fatal: cannot use C:/Users/hkm/.gitignore_global as an exclude file
+```
+
+### Context
+- Command attempted: `git status --short`
+- Affected config: `core.excludesfile = ~/.gitignore_global`
+
+### Suggested Fix
+让 `core.excludesfile` 直接指向 dotfiles 中的真实文件路径。
+
+### Metadata
+- Reproducible: yes
+- Related Files: C:/Users/hkm/.gitconfig
+- Pattern-Key: vcs.global-excludesfile-symlink
+
+### Resolution
+- **Resolved**: 2026-07-22T00:00:00Z
+- **Notes**: 已设置为 `C:/Users/hkm/.dotfiles/git/gitignore_global`；`git status --short` 已恢复正常。
+
+---
