@@ -40,31 +40,39 @@ function transactionComplete(transaction: IDBTransaction): Promise<void> {
 
 export async function getLinks(): Promise<LinkItem[]> {
   const database = await openDatabase()
-  const transaction = database.transaction(storeName, 'readonly')
-  const links = await requestResult(transaction.objectStore(storeName).getAll())
 
-  database.close()
-  return links
+  try {
+    const transaction = database.transaction(storeName, 'readonly')
+    return await requestResult(transaction.objectStore(storeName).getAll())
+  } finally {
+    database.close()
+  }
 }
 
 export async function saveLink(link: LinkItem): Promise<void> {
   const database = await openDatabase()
-  const transaction = database.transaction(storeName, 'readwrite')
-  transaction.objectStore(storeName).put(link)
 
-  await transactionComplete(transaction)
-  database.close()
+  try {
+    const transaction = database.transaction(storeName, 'readwrite')
+    transaction.objectStore(storeName).put(link)
+    await transactionComplete(transaction)
+  } finally {
+    database.close()
+  }
 }
 
 /** 为明确的演示数据重置操作替换本地数据集。 */
 export async function replaceLinks(links: LinkItem[]): Promise<void> {
   const database = await openDatabase()
-  const transaction = database.transaction(storeName, 'readwrite')
-  const store = transaction.objectStore(storeName)
 
-  store.clear()
-  links.forEach((link) => store.put(link))
+  try {
+    const transaction = database.transaction(storeName, 'readwrite')
+    const store = transaction.objectStore(storeName)
 
-  await transactionComplete(transaction)
-  database.close()
+    store.clear()
+    links.forEach((link) => store.put(link))
+    await transactionComplete(transaction)
+  } finally {
+    database.close()
+  }
 }

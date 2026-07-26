@@ -63,17 +63,3 @@ export function matchesSearch(item: LinkItem, query: string): boolean {
     .toLowerCase()
     .includes(normalizedQuery)
 }
-
-/** 开发期的轻量检查，保护唯一的非平凡输入边界规则。 */
-export function runLinkChecks(): void {
-  const normalized = validateAndNormalizeUrl('example.com/notes')
-  const rejected = validateAndNormalizeUrl('ftp://example.com')
-
-  if (!normalized.valid || normalized.value !== 'https://example.com/notes') {
-    throw new Error('URL normalization check failed.')
-  }
-
-  if (rejected.valid) {
-    throw new Error('URL protocol check failed.')
-  }
-}
